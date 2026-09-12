@@ -1,0 +1,19 @@
+pool 400 runs x 50 evaluations · alpha 0.05 · tau 2.162557
+
+arm R — default_rng(19) permutation, first 200 cal
+  pre-registered pow3 rule (not shipped): fk 13 · joint 0.0650 · savings 0.5215 · PASS (premature)
+  last value, no hold                    fk 18 (want 18) · savings 0.7796 (want 0.7796)  OK
+  last value, hold pinned at 18          fk 18 (want 18) · savings 0.5747 (want 0.5747)  OK
+  last value, hold_until_resolved 0.90   fk 18 (want 18) · savings 0.5747 (want 0.5747) · hold step 18 (want 18)  OK
+  null rule, kill everything at peek 3: fk 37 · joint 0.1850 · FAIL (validity breach)  (control: the gate caught it)
+
+arm T — night boundary nearest 200: cut at index 197 (candidates [197, 215])
+  pre-registered pow3 rule (not shipped): fk 11 · joint 0.0542 · savings 0.5279 · PASS (premature)
+  last value, no hold                    fk  7 (want  7) · savings 0.7541 (want 0.7541)  OK
+  last value, hold pinned at 18          fk  7 (want  7) · savings 0.5586 (want 0.5586)  OK
+  last value, hold_until_resolved 0.90   fk  7 (want  7) · savings 0.5586 (want 0.5586) · hold step 18 (want 18)  OK
+  null rule, kill everything at peek 3: fk 28 · joint 0.1379 · FAIL (validity breach)  (control: the gate caught it)
+
+2000 resplits, last value with hold 0.90: joint mean 0.0504 · breach rate 0.086 · savings mean 0.600 · best run killed 0.136  (recorded at close, not recomputed here)
+
+REPRODUCES CC-03c
