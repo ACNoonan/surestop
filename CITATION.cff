@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this software or the 400-curve pool, please cite it as below."
+type: software
+title: "certified-pruner: stop bad training runs early, with a bound on stopping good ones"
+authors:
+  - family-names: Noonan
+    given-names: Adam
+    orcid: "https://orcid.org/0009-0000-7506-6395"
+version: 0.1.0
+date-released: 2026-09-12
+doi: 10.5281/zenodo.22726440
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.22726440
+    description: "Concept DOI, always resolves to the newest version"
+  - type: doi
+    value: 10.5281/zenodo.22726441
+    description: "Version 0.1.0"
+repository-code: "https://github.com/ACNoonan/certified-pruner"
+url: "https://pypi.org/project/certified-pruner/"
+license: MIT
+keywords:
+  - early stopping
+  - hyperparameter optimization
+  - conformal risk control
+  - pruning
+  - optuna
+abstract: >-
+  A kill rule for training runs with a conformal bound on the expected fraction of runs that
+  were good and got killed. Includes a numpy KillRule, an Optuna CertifiedPruner, and the 400
+  LoRA fine-tuning curves from the pre-registered experiment CC-03c, with a script that
+  reproduces the recorded numbers exactly.

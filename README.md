@@ -143,5 +143,6 @@ training runs, and no major tuning library ships a pruner with a stated error gu
 
 ## Citing
 
-The curves are a measurement, released under the same MIT licence as the code. If you use them,
-cite this repository.
+Concept DOI: [10.5281/zenodo.22726440](https://doi.org/10.5281/zenodo.22726440), which always resolves
+to the newest version. `CITATION.cff` has the full entry. The curves are a measurement, released
+under the same MIT licence as the code.
