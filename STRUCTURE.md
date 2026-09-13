@@ -1,4 +1,4 @@
-# Structure — certified-pruner
+# Structure — surestop
 
 **Kind: artifact (public package and measurement).** The research work that produced it lives in a
 private repository. This repository holds what a reader can install, run, and check.
@@ -18,10 +18,10 @@ package has drifted from what was measured.
 README.md                 what this is, how to use it, what was measured, what the bound omits
 STRUCTURE.md              this file
 LICENSE                   MIT
-pyproject.toml            builds certified-pruner from src/
-src/certified_pruner/
+pyproject.toml            builds surestop from src/
+src/surestop/
   core.py                 KillRule: fit on completed curves, decide on partial ones
-  optuna_pruner.py        CertifiedPruner: shadow mode for n_calibration trials, then frozen
+  optuna_pruner.py        ConformalPruner: shadow mode for n_calibration trials, then frozen
 tests/
   test_core.py            the bound holds on exchangeable synthetic runs; a 2× leak fails the same check
   test_optuna_pruner.py   shadow mode, pruning after, the adaptive-sampler warning
@@ -34,7 +34,7 @@ docs/
   writeup.md              the measurement, what went wrong, and the untested fix
   prior-art.md            the sweep that found the mechanism taken and the application open
   hyperparameter-prior.md the frozen prior every curve was drawn from
-optunahub/package/pruners/certified_pruner/
+optunahub/package/pruners/conformal/
                           the registry entry, self-contained, ready to copy into an optunahub-registry fork
 .github/workflows/test.yml   tests plus the reproduction, on three Python versions
 ```

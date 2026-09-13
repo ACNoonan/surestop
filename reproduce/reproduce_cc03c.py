@@ -30,7 +30,7 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "src"))
-from certified_pruner import KillRule  # noqa: E402
+from surestop import KillRule  # noqa: E402
 
 
 def main() -> int:

@@ -22,12 +22,12 @@ def objective(trial: optuna.Trial) -> float:
     return final
 
 
-module = optunahub.load_module(package="pruners/certified_pruner")
+module = optunahub.load_module(package="pruners/conformal")
 
 # The first n_calibration completed trials run unpruned and calibrate the rule. After that the
 # rule is frozen and prunes with a bound of alpha on the fraction of trials that were good and
 # got killed. The bound needs a random or quasi-random sampler.
-pruner = module.CertifiedPruner(n_calibration=40, alpha=0.05)
+pruner = module.ConformalPruner(n_calibration=40, alpha=0.05)
 study = optuna.create_study(sampler=optuna.samplers.RandomSampler(seed=0), pruner=pruner)
 study.optimize(objective, n_trials=160)
 

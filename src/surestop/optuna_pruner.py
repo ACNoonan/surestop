@@ -1,6 +1,6 @@
 """Optuna integration: a pruner that runs in shadow mode first, then kills with a certified bound.
 
-    pruner = CertifiedPruner(n_calibration=60, alpha=0.05)
+    pruner = ConformalPruner(n_calibration=60, alpha=0.05)
     study = optuna.create_study(sampler=optuna.samplers.RandomSampler(), pruner=pruner)
 
 **How it behaves.**
@@ -35,7 +35,7 @@ _EXCHANGEABLE = (optuna.samplers.RandomSampler, optuna.samplers.QMCSampler,
                  optuna.samplers.GridSampler, optuna.samplers.BruteForceSampler)
 
 
-class CertifiedPruner(BasePruner):
+class ConformalPruner(BasePruner):
     def __init__(self, n_calibration: int = 60, alpha: float = 0.05, *,
                  good_threshold: float | None = None, good_quantile: float = 0.20,
                  min_peek: int = 0, hold_until_resolved: float | None = None,
@@ -51,7 +51,7 @@ class CertifiedPruner(BasePruner):
 
     @classmethod
     def from_curves(cls, curves: ArrayLike, steps: Any, *, maximize: bool = False,
-                    **kw: Any) -> "CertifiedPruner":
+                    **kw: Any) -> "ConformalPruner":
         """A pruner already calibrated offline, e.g. on a previous sweep's completed curves."""
         p = cls(n_calibration=len(curves), **kw)
         p.rule_ = KillRule(maximize=maximize, **p._kw).fit(curves)

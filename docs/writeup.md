@@ -107,12 +107,12 @@ runs, and a follow-up experiment is sized for 200.
 
 ## Try it
 
-`certified-pruner` v0.1 wraps the rule as a numpy class and an Optuna pruner. The pruner runs the
+`surestop` v0.2 wraps the rule as a numpy class and an Optuna pruner. The pruner runs the
 first trials unpruned to calibrate, then freezes. `reproduce/reproduce_cc03c.py` checks that the
 package reproduces the last-value rows above exactly, on both pre-registered splits, from the
 curves in `reproduce/cc03c_pool.json`.
 
 ```python
 study = optuna.create_study(sampler=optuna.samplers.RandomSampler(),
-                            pruner=CertifiedPruner(n_calibration=60, alpha=0.05))
+                            pruner=ConformalPruner(n_calibration=60, alpha=0.05))
 ```

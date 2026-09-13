@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 optuna = pytest.importorskip("optuna")
-from certified_pruner import CertifiedPruner  # noqa: E402
+from surestop import ConformalPruner  # noqa: E402
 
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 T = 20
@@ -25,7 +25,7 @@ def objective(trial):
 
 
 def test_calibrates_in_shadow_mode_then_prunes():
-    pruner = CertifiedPruner(n_calibration=40, alpha=0.05)
+    pruner = ConformalPruner(n_calibration=40, alpha=0.05)
     study = optuna.create_study(sampler=optuna.samplers.RandomSampler(seed=0), pruner=pruner)
     study.optimize(objective, n_trials=160)
     states = [t.state for t in study.trials]
@@ -35,7 +35,7 @@ def test_calibrates_in_shadow_mode_then_prunes():
 
 
 def test_warns_for_an_adaptive_sampler():
-    pruner = CertifiedPruner(n_calibration=20)
+    pruner = ConformalPruner(n_calibration=20)
     study = optuna.create_study(sampler=optuna.samplers.TPESampler(seed=0), pruner=pruner)
     with pytest.warns(RuntimeWarning, match="not exchangeable"):
         study.optimize(objective, n_trials=2)
@@ -44,5 +44,5 @@ def test_warns_for_an_adaptive_sampler():
 def test_from_curves_is_calibrated_before_the_first_trial():
     rng = np.random.default_rng(0)
     curves = 2.17 + rng.normal(0, 0.01, (60, 1)) + 0.2 * np.exp(-np.arange(T) / 4)
-    pruner = CertifiedPruner.from_curves(curves, steps=range(T))
+    pruner = ConformalPruner.from_curves(curves, steps=range(T))
     assert pruner.rule_.n_calibration_ == 60 and pruner.steps_ == list(range(T))

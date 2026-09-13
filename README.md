@@ -1,4 +1,4 @@
-# certified-pruner
+# SureStop
 
 **Stop bad training runs early, with a stated bound on how often you stop one that would have
 ended well.** You pick α. The rule kills runs so that the expected fraction of runs that were
@@ -15,8 +15,8 @@ in this repository, and a script checks that the package reproduces the recorded
 ## Install
 
 ```
-pip install certified-pruner            # numpy + scipy
-pip install "certified-pruner[optuna]"  # adds the Optuna pruner
+pip install surestop            # numpy + scipy
+pip install "surestop[optuna]"  # adds the Optuna pruner
 ```
 
 ## Use
@@ -24,7 +24,7 @@ pip install "certified-pruner[optuna]"  # adds the Optuna pruner
 Plain numpy, on any training loop:
 
 ```python
-from certified_pruner import KillRule
+from surestop import KillRule
 
 # completed_curves: array of shape (runs, evaluations), lower is better
 rule = KillRule(alpha=0.05, good_threshold=2.16, min_peek=17).fit(completed_curves)
@@ -38,10 +38,10 @@ With Optuna, the first `n_calibration` trials run unpruned to calibrate, then th
 
 ```python
 import optuna
-from certified_pruner import CertifiedPruner
+from surestop import ConformalPruner
 
 study = optuna.create_study(sampler=optuna.samplers.RandomSampler(),
-                            pruner=CertifiedPruner(n_calibration=60, alpha=0.05))
+                            pruner=ConformalPruner(n_calibration=60, alpha=0.05))
 ```
 
 Pass `maximize=True` (or a `direction="maximize"` study) when higher is better.
@@ -126,7 +126,7 @@ python reproduce/reproduce_cc03c.py
 
 | path | what |
 |---|---|
-| `src/certified_pruner/` | `KillRule` (numpy/scipy) and `CertifiedPruner` (Optuna) |
+| `src/surestop/` | `KillRule` (numpy/scipy) and `ConformalPruner` (Optuna) |
 | `tests/` | the bound holds on synthetic exchangeable runs, and the same assertion fails on a rule that leaks 2× its budget |
 | `reproduce/` | the 400 curves, the pre-registered splits and targets, the script, and its committed output |
 | `docs/` | the write-up, the prior-art sweep, and the frozen hyperparameter prior the curves were drawn from |

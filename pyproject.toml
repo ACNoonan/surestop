@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "certified-pruner"
-version = "0.1.0"
-description = "Early-kill training runs with a conformal bound on killing runs that would have ended well"
+name = "surestop"
+version = "0.2.0"
+description = "Stop bad runs early, with a conformal bound on how often you stop one that would have ended well"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -25,12 +25,12 @@ optuna = ["optuna>=4"]
 test = ["pytest", "optuna>=4"]
 
 [project.urls]
-Homepage = "https://github.com/ACNoonan/certified-pruner"
-Issues = "https://github.com/ACNoonan/certified-pruner/issues"
+Homepage = "https://github.com/ACNoonan/surestop"
+Issues = "https://github.com/ACNoonan/surestop/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["certified_pruner*"]
+include = ["surestop*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

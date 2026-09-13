@@ -1,6 +1,6 @@
 ---
 author: Adam Noonan
-title: Certified Pruner
+title: Conformal Pruner
 description: Prunes trials with a conformal bound on how often it prunes a trial that would have finished well. Calibrates on the first trials, then freezes.
 tags: [pruner, conformal, early stopping, risk control]
 optuna_versions: [4.6.0]
@@ -17,11 +17,11 @@ the trials it judges must come from the same random process.
 It runs the first `n_calibration` completed trials unpruned, calibrates a threshold on their
 learning curves by conformal risk control, then freezes and prunes. The construction was measured
 on 400 real LoRA fine-tuning runs under a pre-registered protocol; the curves and the reproduction
-script are in the [certified-pruner](https://github.com/ACNoonan/certified-pruner) repository.
+script are in the [surestop](https://github.com/ACNoonan/surestop) repository.
 
 ## Class or Function Names
 
-- `CertifiedPruner(n_calibration=60, alpha=0.05, *, good_threshold=None, good_quantile=0.20, min_peek=0, hold_until_resolved=None, predictor=last_value)`
+- `ConformalPruner(n_calibration=60, alpha=0.05, *, good_threshold=None, good_quantile=0.20, min_peek=0, hold_until_resolved=None, predictor=last_value)`
   - `n_calibration`: completed trials that run unpruned and calibrate the rule, by trial number.
   - `alpha`: bound on the expected fraction of trials that are good and pruned.
   - `good_threshold`: a trial is good if its final reported value is at or below this (at or above, for a maximize study). Overrides `good_quantile`.
@@ -29,7 +29,7 @@ script are in the [certified-pruner](https://github.com/ACNoonan/certified-prune
   - `min_peek`: index of the earliest step at which a prune may fire.
   - `hold_until_resolved`: if set (for example `0.90`), also hold prunes until the calibration trials' early ranking agrees with their final ranking at this Spearman correlation.
   - `predictor`: a causal forecaster of the final value from the curve so far. Default: the latest reported value.
-- `CertifiedPruner.from_curves(curves, steps, *, maximize=False, **kw)`: a pruner calibrated offline on a previous sweep's completed curves, so it prunes from the first trial.
+- `ConformalPruner.from_curves(curves, steps, *, maximize=False, **kw)`: a pruner calibrated offline on a previous sweep's completed curves, so it prunes from the first trial.
 - `KillRule`: the underlying numpy rule, usable without Optuna.
 
 Every calibration trial must report on the same step grid. The final outcome is the last reported intermediate value rather than `trial.value`.
@@ -46,13 +46,13 @@ $ pip install numpy scipy
 import optuna
 import optunahub
 
-module = optunahub.load_module(package="pruners/certified_pruner")
-pruner = module.CertifiedPruner(n_calibration=60, alpha=0.05)
+module = optunahub.load_module(package="pruners/conformal")
+pruner = module.ConformalPruner(n_calibration=60, alpha=0.05)
 study = optuna.create_study(sampler=optuna.samplers.RandomSampler(), pruner=pruner)
 study.optimize(objective, n_trials=300)
 ```
 
-See [example.py](https://github.com/optuna/optunahub-registry/blob/main/package/pruners/certified_pruner/example.py) for a runnable example.
+See [example.py](https://github.com/optuna/optunahub-registry/blob/main/package/pruners/conformal/example.py) for a runnable example.
 
 ## Others
 
@@ -65,7 +65,7 @@ See [example.py](https://github.com/optuna/optunahub-registry/blob/main/package/
 
 ### Measurement
 
-400 LoRA fine-tuning runs of Qwen2.5-0.5B, 50 evaluations each, two pre-registered splits at `alpha = 0.05`. The shipped rule (latest value as predictor) recorded 18 false prunes of 200 on the random split and 7 of 203 on the past-to-future split, with a mean joint rate of 5.0% over 2000 resplits. A rule that pruned everything at once failed the same gate on both splits. Details, curves and the reproduction script: [certified-pruner](https://github.com/ACNoonan/certified-pruner).
+400 LoRA fine-tuning runs of Qwen2.5-0.5B, 50 evaluations each, two pre-registered splits at `alpha = 0.05`. The shipped rule (latest value as predictor) recorded 18 false prunes of 200 on the random split and 7 of 203 on the past-to-future split, with a mean joint rate of 5.0% over 2000 resplits. A rule that pruned everything at once failed the same gate on both splits. Details, curves and the reproduction script: [surestop](https://github.com/ACNoonan/surestop).
 
 ### Reference
 

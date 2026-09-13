@@ -5,7 +5,7 @@ import math
 import numpy as np
 import pytest
 
-from certified_pruner import KillRule, NotEnoughCalibration
+from surestop import KillRule, NotEnoughCalibration
 
 T = 30
 
