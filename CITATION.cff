@@ -14,10 +14,10 @@ identifiers:
     value: 10.5281/zenodo.22726440
     description: "Concept DOI, always resolves to the newest version"
   - type: doi
-    value: 10.5281/zenodo.22726441
-  - type: doi
     value: 10.5281/zenodo.22733609
     description: "Version 0.2.0"
+  - type: doi
+    value: 10.5281/zenodo.22726441
     description: "Version 0.1.0, released as certified-pruner"
 repository-code: "https://github.com/ACNoonan/surestop"
 url: "https://pypi.org/project/surestop/"
