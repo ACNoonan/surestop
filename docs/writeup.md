@@ -116,3 +116,6 @@ curves in `reproduce/cc03c_pool.json`.
 study = optuna.create_study(sampler=optuna.samplers.RandomSampler(),
                             pruner=ConformalPruner(n_calibration=60, alpha=0.05))
 ```
+
+The pruner is also in the OptunaHub registry, where
+`optunahub.load_module(package="pruners/conformal")` loads it without installing surestop.

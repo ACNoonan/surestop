@@ -46,6 +46,17 @@ study = optuna.create_study(sampler=optuna.samplers.RandomSampler(),
 
 Pass `maximize=True` (or a `direction="maximize"` study) when higher is better.
 
+The same pruner is in the OptunaHub registry as
+[`pruners/conformal`](https://github.com/optuna/optunahub-registry/tree/main/package/pruners/conformal),
+so an Optuna user can load it without installing surestop:
+
+```python
+import optunahub
+
+module = optunahub.load_module(package="pruners/conformal")
+pruner = module.ConformalPruner(n_calibration=60, alpha=0.05)
+```
+
 ## The rule
 
 A run is *good* if its final value ends at or below a threshold τ. At every evaluation, a
@@ -130,7 +141,7 @@ python reproduce/reproduce_cc03c.py
 | `tests/` | the bound holds on synthetic exchangeable runs, and the same assertion fails on a rule that leaks 2× its budget |
 | `reproduce/` | the 400 curves, the pre-registered splits and targets, the script, and its committed output |
 | `docs/` | the write-up, the prior-art sweep, and the frozen hyperparameter prior the curves were drawn from |
-| `optunahub/` | the package as an OptunaHub registry entry |
+| `optunahub/` | the source of the OptunaHub registry entry `pruners/conformal` |
 
 ## Related work
 

@@ -35,6 +35,7 @@ docs/
   prior-art.md            the sweep that found the mechanism taken and the application open
   hyperparameter-prior.md the frozen prior every curve was drawn from
 optunahub/package/pruners/conformal/
-                          the registry entry, self-contained, ready to copy into an optunahub-registry fork
+                          the registry entry, self-contained. Merged into optuna/optunahub-registry as
+                          pruners/conformal (PR #417, 2026-10-07); keep this copy identical to it
 .github/workflows/test.yml   tests plus the reproduction, on three Python versions
 ```
