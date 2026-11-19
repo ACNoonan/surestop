@@ -86,3 +86,52 @@ def test_maximize_mirrors_minimize():
     lo = KillRule(alpha=0.05, good_threshold=2.159).fit(cal)
     hi = KillRule(alpha=0.05, good_threshold=-2.159, maximize=True).fit(-cal)
     assert [lo.kill_step(c) for c in test] == [hi.kill_step(-c) for c in test]
+
+
+# ── guarantee="conditional": the share of good runs killed ──────────────────────────────────────
+def mean_conditional_rate(alpha_fit, reps=400, n_cal=300, n_test=300, seed=10):
+    """Pooled share of good test runs killed, with a standard error over repetitions."""
+    rng = np.random.default_rng(seed)
+    rates = []
+    for _ in range(reps):
+        cal, test = synth(n_cal, rng), synth(n_test, rng)
+        rule = KillRule(alpha=alpha_fit, guarantee="conditional", good_threshold=2.159).fit(cal)
+        rates.append(rule.evaluate(test)["conditional_false_kill_rate"])
+    rates = np.array([r for r in rates if r is not None])
+    return rates.mean(), rates.std(ddof=1) / math.sqrt(len(rates))
+
+
+def test_conditional_false_kill_rate_is_bounded():
+    mean, se = mean_conditional_rate(0.05)
+    assert mean <= 0.05 + 3 * se, (mean, se)
+    assert mean > 0.02, mean  # the budget is spent, so the rule is not vacuously safe
+
+
+def test_conditional_negative_control_the_bound_check_can_fail():
+    mean, se = mean_conditional_rate(0.10)
+    assert not (mean <= 0.05 + 3 * se), (mean, se)
+
+
+def test_joint_rule_does_not_bound_the_conditional_rate():
+    # The reason the conditional mode exists: the joint rule at the same alpha kills several
+    # times alpha of the good runs.
+    rng = np.random.default_rng(11)
+    cal, test = synth(2000, rng), synth(4000, rng)
+    joint = KillRule(alpha=0.05, good_threshold=2.159).fit(cal).evaluate(test)
+    cond = KillRule(alpha=0.05, guarantee="conditional", good_threshold=2.159).fit(cal).evaluate(test)
+    assert joint["conditional_false_kill_rate"] > 0.15
+    assert cond["conditional_false_kill_rate"] < 0.08
+    assert cond["savings"] < joint["savings"]
+
+
+def test_conditional_needs_enough_good_runs():
+    cal = synth(200, np.random.default_rng(12))
+    tau = np.sort(cal[:, -1])[17]  # exactly 18 good runs; alpha = 0.05 needs 19
+    with pytest.raises(NotEnoughCalibration, match="good calibration runs"):
+        KillRule(alpha=0.05, guarantee="conditional", good_threshold=tau).fit(cal)
+    KillRule(alpha=0.05, guarantee="conditional", good_threshold=np.sort(cal[:, -1])[18]).fit(cal)
+
+
+def test_unknown_guarantee_raises():
+    with pytest.raises(ValueError):
+        KillRule(guarantee="marginal").fit(synth(100, np.random.default_rng(13)))

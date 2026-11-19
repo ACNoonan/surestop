@@ -14,3 +14,4 @@ jobs:
       - run: pip install -e ".[test]"
       - run: pytest -q
       - run: python reproduce/reproduce_cc03c.py
+      - run: python reproduce/baselines_cc03c.py --check

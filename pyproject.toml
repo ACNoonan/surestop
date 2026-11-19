@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "surestop"
-version = "0.2.0"
+version = "0.3.0"
 description = "Stop bad runs early, with a conformal bound on how often you stop one that would have ended well"
 readme = "README.md"
 license = "MIT"

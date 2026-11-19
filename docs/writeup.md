@@ -8,8 +8,9 @@ well. If you care about that number, you have to measure it yourself.
 We built a rule that states it up front. You pick α, and the rule guarantees that the expected
 fraction of runs that were good *and* got killed stays at or below α. We tested it on 400 real
 fine-tuning runs under a pre-registered protocol. It kept the bound and saved about half the
-evaluation compute. It also exposed a flaw in how it decides, which a small change fixes on the
-same data. That fix still needs a fresh test.
+evaluation compute. It also exposed a flaw in how it decides. A small change looked like a fix on
+the same data, and a later comparison against the heuristic pruners left that fix in doubt. The
+same comparison showed where the rule is worth its cost and where it isn't.
 
 ## The rule
 
@@ -79,17 +80,68 @@ averages a 5.0% joint rate and lands on a breach 8.5% of the time, so the 18 sit
 distribution's tail rather than showing a leak. A correct rule at this sample size breaches on
 about 7% of splits.
 
-## A fix, not yet confirmed
+## A possible fix, with mixed evidence
 
 Holding kills until evaluation 18 and forecasting from the latest value, on the same 400 runs:
 
 - **Savings:** 57.5% on the random split and 55.9% on the past-to-future split, with the same
   false-kill counts as above.
-- **Over 2000 resplits:** joint rate 5.0%, savings 60%, and the best run killed 13.6% of the time,
-  against 24.8% without the hold.
+- **Over 2000 resplits:** joint rate 5.0%, savings 60%, and the best test run killed 13.6% of the
+  time, against 24.8% without the hold.
 
-These runs had already been seen, so that result is a hypothesis. Its test needs a fresh pool of
-runs, and a follow-up experiment is sized for 200.
+These runs had already been seen, so that result is a hypothesis, and a later look at the same
+pool cuts against it. In the whole-sweep comparison below, the held rule killed the pool's single
+best run 58.6% of the time, against 1.0% without the hold. That run ranks 69th of 400 at
+evaluation 18 and reaches 1st only at the end. A held rule ignores the noisy early evaluations,
+so its threshold for the later ones is tighter, and a late bloomer crosses it. The share of the
+five best runs killed still favours the hold slightly, 13.5% against 16.9%. The package leaves
+the hold off by default.
+
+## Against the heuristic pruners
+
+This comparison is exploratory: it was run after the experiment closed, on the same 400 curves,
+and was not pre-registered. `reproduce/baselines_cc03c.py` produces it.
+
+All 400 runs arrive in a random order and each pruner decides from the first run. SureStop pays
+for its calibration runs in full. Median and ASHA are Optuna's `MedianPruner` and
+`SuccessiveHalvingPruner`, re-implemented in numpy and checked against Optuna's own stopping
+points. The table averages 500 orders at α = 0.05.
+
+| pruner | compute saved | good runs killed | top-5 runs killed | regret (nats) |
+|---|---|---|---|---|
+| SureStop joint, 60 calibration | 62.9% | 26.6% | 16.9% | 0.0000 |
+| SureStop joint, 60 calibration, hold 18 | 46.7% | 25.9% | 13.5% | 0.0001 |
+| SureStop conditional, 200 calibration | 28.8% | 1.7% | 0.0% | 0.0000 |
+| Median, 5 startup, warmup 18 | 58.0% | 62.6% | 41.4% | 0.0002 |
+| Median, 5 startup, no warmup | 91.8% | 83.6% | 86.3% | 0.0006 |
+| ASHA, η = 3, rungs 2/6/18 | 87.8% | 79.4% | 83.0% | 0.0005 |
+
+"Good runs killed" is a share of all 65 good runs in the pool. "Regret" is the best surviving
+final loss minus the pool's best.
+
+The rule does what it claims: it kills a quarter of the good runs where the heuristics kill 63%
+to 84%. In this pool that buys a sweep almost nothing. Final losses span 2.1575 to 2.2170 with a
+standard deviation of 0.013 nats, so the good runs are close to interchangeable, and ASHA ends
+0.0005 nats from the best run while saving 88% of the compute. A sweep needs one winner. The
+bound protects every good run, which is a different job.
+
+That points the rule away from sweeps and toward fleets of runs where each good one matters:
+seed replicates, nightly retrains, per-customer fine-tunes. Those repeat one process, so the runs
+are exchangeable, and they come with an acceptance bar to use as τ. We have not measured any of
+them.
+
+## The conditional guarantee
+
+The joint bound let a third of the good runs die, and a reader who sees "5%" expects 5% of good
+runs. Version 0.3 adds `guarantee="conditional"`, which bounds that share directly. It ranks the
+scores of the m good calibration runs alone and sets λ to the ⌈(1−α)(m+1)⌉-th smallest. A new
+good run is exchangeable with those m, so it scores above the k-th smallest of them with
+probability 1 − k/(m+1), which is at most α. This is the one-class calibration Xie et al. use.
+
+It needs at least ⌈1/α⌉ − 1 good calibration runs: 19 at α = 0.05, which at this pool's good
+fraction is about 120 runs. In the table above it calibrates on 200. On the 200 runs it then
+judges, it skips about 58% of the evaluations and kills about 3% of the good runs. Like the
+comparison, this was measured after the pool closed.
 
 ## What this does not claim
 
@@ -107,7 +159,7 @@ runs, and a follow-up experiment is sized for 200.
 
 ## Try it
 
-`surestop` v0.2 wraps the rule as a numpy class and an Optuna pruner. The pruner runs the
+`surestop` wraps the rule as a numpy class and an Optuna pruner. The pruner runs the
 first trials unpruned to calibrate, then freezes. `reproduce/reproduce_cc03c.py` checks that the
 package reproduces the last-value rows above exactly, on both pre-registered splits, from the
 curves in `reproduce/cc03c_pool.json`.

@@ -1,0 +1,14 @@
+pool 400 runs x 50 evaluations · tau 2.162557 · 65 good runs · 500 random orders · alpha 0.05
+final loss: min 2.1575 · median 2.1736 · max 2.2170 · sd 0.0133
+
+arm                                        saved  good killed  top-5 killed  best killed   regret  regret p95
+SureStop joint, 60 cal, no hold            62.9%        26.6%         16.9%         1.0%   0.0000      0.0000
+SureStop joint, 60 cal, hold 18            46.7%        25.9%         13.5%        58.6%   0.0001      0.0002
+SureStop joint, 200 cal, hold 18           27.8%        16.0%          9.9%        49.4%   0.0001      0.0002
+SureStop conditional, 200 cal, no hold     28.8%         1.7%          0.0%         0.0%   0.0000      0.0000
+SureStop conditional, 200 cal, hold 18     22.3%         1.6%          0.0%         0.2%   0.0000      0.0000
+Median, 5 startup, warmup 18               58.0%        62.6%         41.4%        87.6%   0.0002      0.0005
+Median, 5 startup, no warmup               91.8%        83.6%         86.3%        88.4%   0.0006      0.0007
+ASHA, eta 3, rungs 2/6/18                  87.8%        79.4%         83.0%        97.8%   0.0005      0.0007
+
+EXPLORATORY: post hoc on a closed pool, not pre-registered.

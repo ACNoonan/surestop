@@ -46,3 +46,26 @@ def test_from_curves_is_calibrated_before_the_first_trial():
     curves = 2.17 + rng.normal(0, 0.01, (60, 1)) + 0.2 * np.exp(-np.arange(T) / 4)
     pruner = ConformalPruner.from_curves(curves, steps=range(T))
     assert pruner.rule_.n_calibration_ == 60 and pruner.steps_ == list(range(T))
+
+
+def test_conditional_guarantee_prunes():
+    pruner = ConformalPruner(n_calibration=100, alpha=0.05, guarantee="conditional")
+    study = optuna.create_study(sampler=optuna.samplers.RandomSampler(seed=0), pruner=pruner)
+    study.optimize(objective, n_trials=200)
+    assert pruner.rule_ is not None and pruner.rule_.n_good_ == 20
+    assert sum(t.state == optuna.trial.TrialState.PRUNED for t in study.trials) > 0
+
+
+def test_conditional_rejects_a_calibration_size_that_cannot_certify():
+    from surestop import NotEnoughCalibration
+    with pytest.raises(NotEnoughCalibration, match="at least 95"):
+        ConformalPruner(n_calibration=60, alpha=0.05, guarantee="conditional")
+
+
+def test_conditional_with_too_few_good_trials_warns_and_never_prunes():
+    pruner = ConformalPruner(n_calibration=30, alpha=0.05, guarantee="conditional",
+                             good_threshold=2.0)  # no trial ends this low
+    study = optuna.create_study(sampler=optuna.samplers.RandomSampler(seed=0), pruner=pruner)
+    with pytest.warns(RuntimeWarning, match="No trial will be pruned"):
+        study.optimize(objective, n_trials=50)
+    assert all(t.state == optuna.trial.TrialState.COMPLETE for t in study.trials)
