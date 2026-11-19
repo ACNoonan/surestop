@@ -41,7 +41,8 @@ docs/
   hyperparameter-prior.md the frozen prior every curve was drawn from
 optunahub/package/pruners/conformal/
                           the registry entry, self-contained. Merged into optuna/optunahub-registry as
-                          pruners/conformal (PR #417, 2026-10-07); keep this copy identical to it.
-                          It is the 0.2.0 pruner: joint guarantee only, until a registry PR updates it
+                          pruners/conformal (PR #417, 2026-10-07). This copy is 0.3.0, with the
+                          conditional guarantee, and is ahead of the registry until PR #456
+                          (opened 2026-11-18) merges; after that, keep the two identical
 .github/workflows/test.yml   tests plus the reproduction and the comparison, on three Python versions
 ```

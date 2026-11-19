@@ -84,7 +84,8 @@ module = optunahub.load_module(package="pruners/conformal")
 pruner = module.ConformalPruner(n_calibration=60, alpha=0.05)
 ```
 
-The registry entry is the 0.2.0 pruner, which has the joint guarantee only.
+The registry entry is the 0.2.0 pruner, which has the joint guarantee only, until
+[registry PR #456](https://github.com/optuna/optunahub-registry/pull/456) merges.
 
 ## The rule
 
@@ -235,7 +236,7 @@ python reproduce/baselines_cc03c.py --check
 | `tests/` | both bounds hold on synthetic exchangeable runs, the same assertions fail on a rule that leaks 2× its budget, and the baseline pruners match Optuna's |
 | `reproduce/` | the 400 curves, the pre-registered splits and targets, and two scripts with their committed output: the reproduction and the comparison against median and ASHA |
 | `docs/` | the write-up, the prior-art sweep, and the frozen hyperparameter prior the curves were drawn from |
-| `optunahub/` | the source of the OptunaHub registry entry `pruners/conformal` (0.2.0, joint guarantee only) |
+| `optunahub/` | the source of the OptunaHub registry entry `pruners/conformal` (this copy is 0.3.0, proposed in registry PR #456) |
 
 ## Related work
 
