@@ -71,8 +71,7 @@ Pass `maximize=True` (or a `direction="maximize"` study) when higher is better.
 Both classes take `guarantee="conditional"` to bound the chance that a good run is killed. The
 default, `guarantee="joint"`, bounds the fraction of all runs that are good and killed.
 [Two guarantees](#two-guarantees) explains the difference. The conditional guarantee is new in
-0.3.0. Until that release is on PyPI, install it with
-`pip install git+https://github.com/ACNoonan/surestop`.
+0.3.0.
 
 The same pruner is in the OptunaHub registry as
 [`pruners/conformal`](https://github.com/optuna/optunahub-registry/tree/main/package/pruners/conformal),

@@ -6,8 +6,8 @@ authors:
   - family-names: Noonan
     given-names: Adam
     orcid: "https://orcid.org/0009-0000-7506-6395"
-version: 0.2.0
-date-released: 2026-09-13
+version: 0.3.0
+date-released: 2026-11-18
 doi: 10.5281/zenodo.22726440
 identifiers:
   - type: doi
@@ -30,6 +30,7 @@ keywords:
   - optuna
 abstract: >-
   A kill rule for training runs with a conformal bound on the expected fraction of runs that
-  were good and got killed. Includes a numpy KillRule, an Optuna ConformalPruner, and the 400
-  LoRA fine-tuning curves from the pre-registered experiment CC-03c, with a script that
-  reproduces the recorded numbers exactly.
+  were good and got killed, or on the probability that a good run is killed. Includes a numpy
+  KillRule, an Optuna ConformalPruner, and the 400 LoRA fine-tuning curves from the
+  pre-registered experiment CC-03c, with scripts that reproduce the recorded numbers exactly
+  and compare the rule with median pruning and successive halving.
