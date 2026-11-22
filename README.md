@@ -200,6 +200,12 @@ final loss minus the pool's best.
   compute (62.9% against 58.0%) and kills fewer than half as many good runs (26.6% against
   62.6%). Against ASHA it is a trade: ASHA saves about 25 points more compute and kills three
   times as many good runs.
+- **Against ASHA, SureStop costs less in total once a killed good run costs about 3 full runs.**
+  The break-even is ASHA's extra compute saved, in full runs, divided by the extra good runs it
+  kills: (0.878 − 0.629) × 400 / ((0.794 − 0.266) × 65) = 99.6 / 34.3 = 2.9 for the joint rule,
+  and 4.7 for the conditional one. A lost seed replicate or a missed delivery plausibly costs
+  that much. A sweep trial you can rerun does not, so a sweep should use ASHA. The script prints
+  the break-even for every arm against ASHA and against median pruning with warmup.
 - **In this pool that protection changes the sweep's result by almost nothing.** Final losses
   span 2.1575 to 2.2170, with a standard deviation of 0.013 nats, and the worst regret in the
   table is 0.0006 nats. The good runs are close to interchangeable, so losing most of them costs

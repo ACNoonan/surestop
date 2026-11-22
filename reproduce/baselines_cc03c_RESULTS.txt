@@ -11,4 +11,15 @@ Median, 5 startup, warmup 18               58.0%        62.6%         41.4%     
 Median, 5 startup, no warmup               91.8%        83.6%         86.3%        88.4%   0.0006      0.0007
 ASHA, eta 3, rungs 2/6/18                  87.8%        79.4%         83.0%        97.8%   0.0005      0.0007
 
+break-even cost of one killed good run, in full runs of compute:
+c* = (heuristic saved - SureStop saved) x n / ((heuristic killed - SureStop killed) x good)
+above c*, SureStop costs less in total; 'dominates' = saves at least as much and kills fewer
+
+arm                                        vs ASHA  vs median, warmup 18
+SureStop joint, 60 cal, no hold                2.9             dominates
+SureStop joint, 60 cal, hold 18                4.7                   1.9
+SureStop joint, 200 cal, hold 18               5.8                   4.0
+SureStop conditional, 200 cal, no hold         4.7                   2.9
+SureStop conditional, 200 cal, hold 18         5.2                   3.6
+
 EXPLORATORY: post hoc on a closed pool, not pre-registered.

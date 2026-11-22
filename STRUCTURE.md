@@ -33,7 +33,8 @@ reproduce/
   cc03c_targets.json      alpha, tau, both pre-registered splits, and every number recorded at close
   reproduce_cc03c.py      re-runs the shipped rule on the splits and compares
   reproduce_cc03c_RESULTS.txt   committed output
-  baselines_cc03c.py      whole-sweep comparison: SureStop against median pruning and ASHA
+  baselines_cc03c.py      whole-sweep comparison: SureStop against median pruning and ASHA,
+                          with the break-even cost of a killed good run
   baselines_cc03c_RESULTS.txt   committed output
 docs/
   writeup.md              the measurement, what went wrong, the comparison with the heuristics, and both guarantees

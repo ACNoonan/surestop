@@ -142,6 +142,21 @@ def table() -> str:
         m = a.mean(axis=0)
         out.append(f"{name:40s} {100 * m[0]:6.1f}% {100 * m[1]:11.1f}% {100 * m[2]:12.1f}% "
                    f"{100 * m[3]:11.1f}% {m[4]:8.4f} {np.percentile(a[:, 4], 95):11.4f}")
+    means = {name: np.array(r).mean(axis=0) for name, r in rows.items()}
+    G = int(good.sum())
+    out += ["", "break-even cost of one killed good run, in full runs of compute:",
+            "c* = (heuristic saved - SureStop saved) x n / ((heuristic killed - SureStop killed) x good)",
+            "above c*, SureStop costs less in total; 'dominates' = saves at least as much and kills fewer",
+            "", f"{'arm':40s} {'vs ASHA':>9s} {'vs median, warmup 18':>21s}"]
+    for name, m in means.items():
+        if not name.startswith("SureStop"):
+            continue
+        cells = []
+        for rival in ("ASHA, eta 3, rungs 2/6/18", "Median, 5 startup, warmup 18"):
+            h = means[rival]
+            d_saved, d_killed = (h[0] - m[0]) * n, (h[1] - m[1]) * G
+            cells.append("dominates" if d_saved <= 0 and d_killed > 0 else f"{d_saved / d_killed:.1f}")
+        out.append(f"{name:40s} {cells[0]:>9s} {cells[1]:>21s}")
     out += ["", "EXPLORATORY: post hoc on a closed pool, not pre-registered."]
     return "\n".join(out) + "\n"
 
