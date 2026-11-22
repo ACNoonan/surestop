@@ -27,7 +27,7 @@ runs are exchangeable, and they come with an acceptance bar, which is the thresh
 needs. None of these settings has been measured yet. The measurement below is a hyperparameter
 sweep.
 
-**Don't use it to find the single best configuration in a sweep.** A sweep needs one winner and
+**For finding one winner, ASHA is the better tool.** A sweep needs one winner and
 can afford to lose most of its good runs. On the 400 measured runs, successive halving killed 79%
 of the good runs, saved 88% of the compute, and still ended within 0.0005 nats of the best run.
 SureStop killed far fewer good runs and saved less
@@ -196,6 +196,10 @@ final loss minus the pool's best.
 - **SureStop keeps the good runs and the heuristics don't.** It kills about a quarter of them
   under the joint guarantee and under 2% under the conditional one. The heuristics kill 63% to
   84%.
+- **Against median pruning with warmup, SureStop wins on both columns.** The joint rule saves more
+  compute (62.9% against 58.0%) and kills fewer than half as many good runs (26.6% against
+  62.6%). Against ASHA it is a trade: ASHA saves about 25 points more compute and kills three
+  times as many good runs.
 - **In this pool that protection changes the sweep's result by almost nothing.** Final losses
   span 2.1575 to 2.2170, with a standard deviation of 0.013 nats, and the worst regret in the
   table is 0.0006 nats. The good runs are close to interchangeable, so losing most of them costs
